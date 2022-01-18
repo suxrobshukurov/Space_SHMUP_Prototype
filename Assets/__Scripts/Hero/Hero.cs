@@ -13,6 +13,7 @@ public class Hero : MonoBehaviour
     public float gameDestroyDelay = 2f;
     public GameObject projectilePrefab;
     public float profectileSpeed = 40;
+    public Weapon[] weapons;
 
     public float fireRate = 0.2f; // для автовыстрела  
    
@@ -24,6 +25,11 @@ public class Hero : MonoBehaviour
 
     private GameObject lastTriggerGo = null;
 
+    // Объявление нового делегата тиа WeaponeFireDelegate
+    public delegate void WeaponeFireDelegate();
+    // Создать поле типа WeaponeFireDelegate с именем fireDelegate
+    public WeaponeFireDelegate fireDelegate;
+
     private void Awake()
     {
         if (S == null)
@@ -34,6 +40,7 @@ public class Hero : MonoBehaviour
         {
             Debug.Log("Hero.Awake() - Попоытка назначить второй Hero.S!");
         }
+        // fireDelegate += TempFire;
 
         canShoot = true;
     }
@@ -51,9 +58,17 @@ public class Hero : MonoBehaviour
         transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
 
         //Позволять короблю выстрелить
-        if (Input.GetKeyDown(KeyCode.Space))
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    TempFire();
+        //}
+
+        // Произвести выстрел из всех видов оружия вызовом fireDelegate
+        // Сначала проверить нажатие клавиш: Axis("Jump")
+        // затем убедиться, что значение fireDelegate не равно null, чтобы избежать ошибки
+        if (Input.GetAxis("Jump") == 1 && fireDelegate != null)
         {
-            TempFire();
+            fireDelegate();
         }
 
         // для авто выстрела 
@@ -70,7 +85,12 @@ public class Hero : MonoBehaviour
         GameObject projGO = Instantiate<GameObject>(projectilePrefab);
         projGO.transform.position = transform.position;
         Rigidbody rigidB = projGO.GetComponent<Rigidbody>();
-        rigidB.velocity = Vector3.up * profectileSpeed;
+        // rigidB.velocity = Vector3.up * profectileSpeed;
+
+        Projectile proj = projGO.GetComponent<Projectile>();
+        proj.type = WeaponType.blaster;
+        float tSpeed = Main.GetWeaponDefinition(proj.type).velocity;
+        rigidB.velocity = Vector3.up * tSpeed;
     }
 
     // для авто выстрела 
@@ -102,11 +122,62 @@ public class Hero : MonoBehaviour
             shieldLevel--;
             Destroy(go);
         }
+        else if (go.tag == "PowerUp")
+        {
+            AbsorbPowerUp(go);
+        }
         else
         {
             print("Triggered by non-Enemy: " + go.name);
         }
 
+    }
+
+    public void AbsorbPowerUp(GameObject go)
+    {
+        PowerUp pu = go.GetComponent<PowerUp>();
+        switch (pu.type)
+        {
+            case WeaponType.shield:
+                shieldLevel++;
+                break;
+            default:
+                if (pu.type == weapons[0].type)
+                {
+                    Weapon w = GetEmptyWeaponSlot();
+                    if (w != null)
+                    {
+                        w.SetType(pu.type);
+                    }
+                }
+                else
+                {
+                    ClearWeapons();
+                    weapons[0].SetType(pu.type);
+                }
+                break;
+        }
+        pu.AbsorbedBy(this.gameObject);
+    }
+
+    Weapon GetEmptyWeaponSlot()
+    {
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            if(weapons[i].type == WeaponType.none)
+            {
+                return (weapons[i]);
+            }
+        }
+        return (null);
+    }
+
+    void ClearWeapons()
+    {
+        foreach(Weapon w in weapons)
+        {
+            w.SetType(WeaponType.none);
+        }
     }
 
     public float shieldLevel
