@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641252, b: 0.5748167, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -655,6 +655,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabEnemies:
   - {fileID: 612022452740534223, guid: cf62c911bbaf4ba448a648515b2885fe, type: 3}
+  - {fileID: 612022452740534223, guid: cf62c911bbaf4ba448a648515b2885fe, type: 3}
+  - {fileID: 612022452740534223, guid: cf62c911bbaf4ba448a648515b2885fe, type: 3}
+  - {fileID: 6937138770603761255, guid: 0c17b1fac73b389498fca5c3b739d8b8, type: 3}
+  - {fileID: 6937138770603761255, guid: 0c17b1fac73b389498fca5c3b739d8b8, type: 3}
+  - {fileID: 3606538946363042750, guid: 958fd692baea9c34a9e25a01e7b8c1f7, type: 3}
+  - {fileID: 3606538946363042750, guid: 958fd692baea9c34a9e25a01e7b8c1f7, type: 3}
+  - {fileID: 1758479520609369720, guid: 411567dde0d986b439000067163b4629, type: 3}
+  - {fileID: 1758479520609369720, guid: 411567dde0d986b439000067163b4629, type: 3}
+  - {fileID: 1217032782028607427, guid: 411da72f16b6f674ca0d967e3dc00b42, type: 3}
   enemySpawnPerSecond: 0.5
   enemyDefaultPadding: 1.5
   weaponDefinitions:
